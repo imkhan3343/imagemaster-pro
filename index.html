@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImageMaster Pro - Ultimate Web-Based Image Processing Suite</title>
+    <meta name="description" content="Access 110+ free, high-performance client-side image processing tools. Convert, compress, resize, crop, filter, and apply AI effects instantly in your browser.">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="ImageMaster Pro - 110+ Browser Image Tools">
+    <meta property="og:description" content="Process images completely in-browser with zero server uploads. Fast, private, and powerful.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&h=630&q=80">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="ImageMaster Pro - 110+ Browser Image Tools">
+    <meta property="twitter:description" content="Process images completely in-browser with zero server uploads. Fast, private, and powerful.">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(31, 41, 55, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            background: rgba(31, 41, 55, 0.6);
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.15);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #374151;
+        }
+
+        /* Gradient Accents */
+        .text-gradient {
+            background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .bg-gradient-accent {
+            background: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+        }
+
+        /* Hide horizontal scrollbar utilities */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Compare Split View Slider */
+        .comparison-slider {
+            position: relative;
+            overflow: hidden;
+        }
+        .comparison-resize {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "ImageMaster Pro",
+      "url": "https://imagemasterpro.com",
+      "description": "All-in-one suite of 110+ dynamic web-based image manipulation and conversion utilities operating securely in-browser.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires HTML5 Canvas, WebGL, or WebAssembly support.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <header class="sticky top-0 z-40 w-full glass-panel border-b border-gray-800 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="app.resetToHome()">
+                <div class="p-2 bg-gradient-accent rounded-xl text-white shadow-lg shadow-indigo-500/20">
+                    <i data-lucide="layers" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <span class="font-bold text-xl tracking-tight text-white">ImageMaster<span class="text-indigo-400 font-light">Pro</span></span>
+                    <div class="text-[10px] text-gray-400 tracking-widest uppercase hidden sm:block">100% In-Browser Engine</div>
+                </div>
+            </div>
+
+            <div class="flex-1 max-w-md relative hidden md:block">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                    <i data-lucide="search" class="w-4 h-4"></i>
+                </div>
+                <input type="text" id="globalSearchInput" oninput="app.handleSearch(this.value)" placeholder="Search across 110+ specialized image modules..." class="w-full pl-10 pr-4 py-2 bg-gray-900/60 border border-gray-700/80 rounded-xl text-sm focus:outline-none focus:border-indigo-500 text-gray-200 placeholder-gray-500 transition-all">
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button onclick="app.openPremiumModal()" class="relative group hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-gradient-accent text-white font-medium text-sm rounded-xl shadow-md transition-transform active:scale-95 overflow-hidden">
+                    <span class="absolute inset-0 w-full h-full bg-white/10 transform -skew-x-12 -translate-x-full group-hover:animate-shine"></span>
+                    <i data-lucide="zap" class="w-4 h-4 text-amber-300 fill-amber-300"></i>
+                    <span>Upgrade to Premium</span>
+                </button>
+                <div class="p-2 rounded-xl bg-gray-800/80 border border-gray-700 text-gray-300 hover:text-white cursor-pointer relative" onclick="app.toggleSettings()">
+                    <i data-lucide="settings" class="w-5 h-5"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-800/60 bg-gray-950/40">
+            <div class="max-w-7xl mx-auto px-4 overflow-x-auto no-scrollbar flex items-center gap-2 py-2.5" id="categoryTabsContainer">
+                </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto w-full px-4 mt-4 text-center">
+        <div class="w-full max-w-[728px] h-[90px] mx-auto bg-gray-900/40 border border-gray-800/80 rounded-xl flex items-center justify-center text-xs text-gray-600 tracking-wider relative overflow-hidden">
+            <span class="absolute top-1 left-2 opacity-50 text-[9px] uppercase">Advertisement Banner (728x90)</span>
+            <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-placeholder" data-ad-slot="0000000000"></ins>
+        </div>
+    </div>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row gap-6">
+        
+        <aside class="w-full md:w-64 shrink-0 flex flex-col gap-6">
+            <div class="glass-panel p-5 rounded-2xl flex flex-col gap-4">
+                <h3 class="text-xs font-semibold text-gray-400 tracking-widest uppercase">System Operations</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-gray-900/60 border border-gray-800 p-3 rounded-xl text-center">
+                        <div class="text-lg font-bold text-indigo-400" id="processedCount">0</div>
+                        <div class="text-[10px] text-gray-500">Processed</div>
+                    </div>
+                    <div class="bg-gray-900/60 border border-gray-800 p-3 rounded-xl text-center">
+                        <div class="text-lg font-bold text-pink-400">100%</div>
+                        <div class="text-[10px] text-gray-500">Local Privacy</div>
+                    </div>
+                </div>
+                <div class="text-xs text-gray-400 border-t border-gray-800/80 pt-3">
+                    <span class="text-emerald-400 font-medium">Pro Tip:</span> Tap processing modules to open unified responsive sandboxes immediately.
+                </div>
+            </div>
+
+            <div class="w-[300px] md:w-full min-h-[250px] mx-auto bg-gray-900/40 border border-gray-800/80 rounded-xl flex items-center justify-center text-xs text-gray-600 tracking-wider relative p-4">
+                <span class="absolute top-1 left-2 opacity-50 text-[9px] uppercase">Sidebar Unit (300x250)</span>
+                <div class="text-center text-gray-500 text-xs">
+                    <p class="font-medium text-gray-400 mb-1">Affiliate Partnership</p>
+                    <p class="text-[11px] px-2 mb-2">Need premium vectors or high-res photography stocks?</p>
+                    <a href="#" target="_blank" class="inline-block text-[11px] px-3 py-1.5 bg-gray-800 border border-gray-700 hover:border-indigo-500 rounded-lg text-indigo-400 transition-all font-medium">Explore Assets &rarr;</a>
+                </div>
+            </div>
+        </aside>
+
+        <section class="flex-1 flex flex-col gap-6" id="viewspaceDynamicFrame">
+            
+            <div id="heroWelcomeFrame" class="flex flex-col gap-6">
+                <div class="relative glass-panel rounded-3xl p-6 sm:p-10 overflow-hidden border border-gray-800/80">
+                    <div class="absolute -right-20 -top-20 w-80 h-80 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-pink-600/10 rounded-full blur-3xl pointer-events-none"></div>
+                    
+                    <div class="max-w-xl relative z-10">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 mb-4">
+                            <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+                            V2.5 Desktop-Class Engine Deployment
+                        </span>
+                        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-4">
+                            Professional Image Utilities. <br><span class="text-gradient">Zero Server Uploads.</span>
+                        </h1>
+                        <p class="text-gray-400 text-sm sm:text-base leading-relaxed mb-6">
+                            Experience a centralized dashboard packed with over 110 canvas-driven tools. Manipulate, clean, enhance, reformat, or strip metadata flawlessly inside your browser viewport.
+                        </p>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="document.getElementById('tool-01').scrollIntoView({behavior:'smooth'})" class="px-5 py-2.5 bg-gray-800 border border-gray-700 text-gray-200 font-medium text-sm rounded-xl hover:border-gray-600 transition-all">
+                                Browse Tools Directory
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-800 pb-3">
+                        <div>
+                            <h2 class="text-lg font-bold text-white tracking-tight" id="activeCategoryTitleDisplay">All Processing Modules</h2>
+                            <p class="text-xs text-gray-500" id="activeCategoryCountDisplay">Showing all available micro-tools</p>
+                        </div>
+                        <div class="block md:hidden w-full sm:max-w-xs relative">
+                            <input type="text" oninput="app.handleSearch(this.value)" placeholder="Search tools..." class="w-full pl-9 pr-4 py-1.5 bg-gray-900 border border-gray-700 rounded-xl text-xs focus:outline-none focus:border-indigo-500 text-gray-200">
+                            <i data-lucide="search" class="absolute left-3 top-2.5 w-3.5 h-3.5 text-gray-500"></i>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="toolsGridInjectSystem">
+                        </div>
+                </div>
+            </div>
+
+            <div id="sandboxProcessingFrame" class="hidden flex flex-col gap-6">
+                <div class="flex items-center justify-between gap-4 bg-gray-900/40 border border-gray-800 p-4 rounded-2xl">
+                    <div class="flex items-center gap-3">
+                        <button onclick="app.resetToHome()" class="p-2 hover:bg-gray-800 rounded-xl text-gray-400 hover:text-white transition-all">
+                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        </button>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-base font-bold text-white" id="sandboxToolTitle">Tool Name</h2>
+                                <span class="text-[10px] px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 font-medium uppercase tracking-wider" id="sandboxToolCategory">Category</span>
+                            </div>
+                            <p class="text-xs text-gray-400 line-clamp-1" id="sandboxToolDescription">Tool operational objective details.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="text-xs text-gray-500 hidden sm:block">Shortcut: <kbd class="px-1.5 py-0.5 bg-gray-800 border border-gray-700 rounded text-[10px]">Ctrl+S</kbd> Save</div>
+                    </div>
+                </div>
+
+                <div id="dropzoneContainerBox" class="border-2 border-dashed border-gray-800 hover:border-indigo-500/50 bg-gray-900/20 rounded-3xl p-8 text-center cursor-pointer transition-all flex flex-col items-center justify-center min-h-[280px]" ondragover="event.preventDefault(); this.classList.add('border-indigo-500')" ondragleave="this.classList.remove('border-indigo-500')" ondrop="app.handleFileDrop(event)">
+                    <input type="file" id="hiddenFileInputHook" class="hidden" accept="image/*" onchange="app.handleFileSelection(event)">
+                    <div class="p-4 bg-gray-900 border border-gray-800 rounded-2xl text-indigo-400 mb-3 shadow-inner">
+                        <i data-lucide="upload-cloud" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-sm font-semibold text-gray-200 mb-1">Load source asset for processing</h3>
+                    <p class="text-xs text-gray-500 max-w-xs mx-auto mb-4">Drag and drop file here, or click to manually browse storage layers (Max free threshold: 50MB)</p>
+                    <button onclick="document.getElementById('hiddenFileInputHook').click(); event.stopPropagation();" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium text-xs rounded-xl border border-gray-700 transition-all">
+                        Browse Local Files
+                    </button>
+                </div>
+
+                <div id="activeCanvasWorkspaceLayout" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    
+                    <div class="lg:col-span-4 glass-panel p-5 rounded-2xl flex flex-col gap-5">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 border-b border-gray-800 pb-2 flex items-center justify-between">
+                            <span>Parameters</span>
+                            <i data-lucide="sliders" class="w-3.5 h-3.5 text-gray-500"></i>
+                        </h3>
+                        
+                        <div id="toolParametersFormContainer" class="flex flex-col gap-4">
+                            </div>
+
+                        <div class="border-t border-gray-800/80 pt-4 flex flex-col gap-2">
+                            <button onclick="app.processActiveToolData()" class="w-full py-2.5 bg-gradient-accent text-white rounded-xl text-xs font-semibold shadow-lg shadow-indigo-500/10 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                                <span>Apply Operations</span>
+                            </button>
+                            <button onclick="app.downloadProcessedOutput()" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-medium active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="download" class="w-4 h-4"></i>
+                                <span>Export Processed File</span>
+                            </button>
+                            <button onclick="app.clearWorkspace()" class="w-full py-1.5 text-gray-500 hover:text-gray-400 text-center text-xs transition-all">
+                                Clear File Context
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-8 flex flex-col gap-4">
+                        <div class="glass-panel rounded-2xl p-4 overflow-hidden flex flex-col bg-gray-950/80">
+                            <div class="flex items-center justify-between border-b border-gray-800 pb-2 mb-3 text-xs text-gray-400">
+                                <div class="flex items-center gap-4">
+                                    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-indigo-500"></span>Canvas Viewport</span>
+                                </div>
+                                <div class="flex items-center gap-2" id="canvasMetaIndicators">
+                                    </div>
+                            </div>
+                            
+                            <div class="w-full bg-gray-900/60 rounded-xl flex items-center justify-center overflow-auto min-h-[340px] max-h-[520px] p-4 relative" style="background-image: radial-gradient(#1e293b 1px, transparent 1px); background-size: 16px 16px;">
+                                <div id="sliderViewContainer" class="comparison-slider max-w-full hidden">
+                                    <canvas id="outputProcessingCanvas" class="max-w-full block h-auto rounded-lg"></canvas>
+                                    <div id="sliderResizeOverlay" class="comparison-resize">
+                                        <canvas id="sourceBackupCanvas" class="max-w-full block h-auto rounded-lg filter brightness-50"></canvas>
+                                    </div>
+                                </div>
+                                <canvas id="singleIsolatedCanvas" class="max-w-full max-h-[460px] object-contain rounded-lg shadow-xl"></canvas>
+                                <pre id="asciiOutputElement" class="hidden text-[5px] leading-[3px] font-mono text-emerald-400 overflow-auto max-w-full max-h-[440px] p-2 bg-black whitespace-pre"></pre>
+                            </div>
+                        </div>
+
+                
